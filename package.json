@@ -1,0 +1,25 @@
+{
+  "name": "webrtc-signaling-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "PROD=true node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArtemBaskal/webrtc-signaling-server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ArtemBaskal/webrtc-signaling-server/issues"
+  },
+  "homepage": "https://github.com/ArtemBaskal/webrtc-signaling-server#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "ws": "^7.4.2"
+  },
+  "devDependencies": {}
+}
