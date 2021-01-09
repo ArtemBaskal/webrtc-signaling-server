@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "PROD=true node server.js"
+    "start": "BUILD_ENV=prod node server.js"
   },
   "repository": {
     "type": "git",
