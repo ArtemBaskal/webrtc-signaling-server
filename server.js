@@ -11,6 +11,7 @@ if (process.env.BUILD_ENV === 'prod') {
     options = {};
 } else {
     http = require('https');
+    /* Fake cert */
     options = {
         key: fs.readFileSync('key.pem'),
         cert: fs.readFileSync('cert.pem')
@@ -29,7 +30,7 @@ const server = http.createServer(
 const wss = new WebSocket.Server({server});
 
 /**
- * @type {{[number] : WebSocket[]}}
+ * @type {{[string] : WebSocket[]}}
  */
 const ROOMS_TO_CLIENTS_MAP = {};
 const QUERY_PARAM_ROOM_NAME = 'room';
@@ -76,5 +77,5 @@ wss.on("connection", (ws, request) => {
 
 const PORT = process.env.PORT || 8000;
 
-server.listen(PORT, () => console.log('Listening on %s', PORT));
+server.listen(PORT, () => console.log('Listening on port %s', PORT));
 

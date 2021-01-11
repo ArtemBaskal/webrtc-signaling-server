@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "BUILD_ENV=prod node server.js"
+    "start": "BUILD_ENV=prod node server.js",
+    "watch": "node server.js"
   },
   "repository": {
     "type": "git",
