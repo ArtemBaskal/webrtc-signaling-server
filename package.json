@@ -19,10 +19,8 @@
   },
   "homepage": "https://github.com/ArtemBaskal/webrtc-signaling-server#readme",
   "dependencies": {
+    "cross-env": "^7.0.3",
     "dotenv": "^8.2.0",
     "ws": "^7.4.2"
-  },
-  "devDependencies": {
-    "cross-env": "^7.0.3"
   }
 }
