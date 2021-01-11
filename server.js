@@ -6,7 +6,15 @@ const url = require('url');
 let http;
 let options;
 
-if (process.env.BUILD_ENV === 'prod') {
+const BUILD_ENVS = {
+    prod: 'prod',
+    dev: 'dev'
+};
+
+const {BUILD_ENV} = process.env;
+const isProd = BUILD_ENV === BUILD_ENVS.prod;
+
+if (isProd) {
     http = require('http');
     options = {};
 } else {

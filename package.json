@@ -4,8 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "BUILD_ENV=prod node server.js",
-    "watch": "node server.js"
+    "start": "cross-env BUILD_ENV=prod node server.js",
+    "watch": "cross-env BUILD_ENV=dev node server.js"
   },
   "repository": {
     "type": "git",
@@ -22,5 +22,7 @@
     "dotenv": "^8.2.0",
     "ws": "^7.4.2"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "cross-env": "^7.0.3"
+  }
 }
