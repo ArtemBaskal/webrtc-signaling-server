@@ -97,7 +97,8 @@ server.on('upgrade', (request, socket, head) => {
             const code = 401;
 
             socket.write(`HTTP/1.1 ${code} ${STATUS_CODES[code]}\r\n\r\n${err}`);
-            socket.destroy(err);
+            // FIXME pass error argument once bug is fixed https://github.com/nodejs/node/issues/33434
+            socket.destroy();
             return;
         }
 
