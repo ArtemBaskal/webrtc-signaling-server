@@ -21,6 +21,7 @@
   "dependencies": {
     "cross-env": "^7.0.3",
     "dotenv": "^8.2.0",
+    "google-auth-library": "^7.0.2",
     "ws": "^7.4.2"
   }
 }

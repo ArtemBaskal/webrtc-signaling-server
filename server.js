@@ -2,6 +2,7 @@ require('dotenv').config();
 const fs = require('fs');
 const WebSocket = require('ws');
 const url = require('url');
+const {OAuth2Client} = require('google-auth-library');
 
 let http;
 let options;
@@ -11,7 +12,7 @@ const BUILD_ENVS = {
     dev: 'dev'
 };
 
-const {BUILD_ENV} = process.env;
+const {BUILD_ENV, DEV_TOKEN, CLIENT_ID} = process.env;
 const isProd = BUILD_ENV === BUILD_ENVS.prod;
 
 if (isProd) {
@@ -75,12 +76,44 @@ const interval = setInterval(() => {
     });
 }, 30000);
 
-const authenticate = (request, callback) => {
-    const room = getQueryParam(request, QUERY_PARAM_ROOM_NAME);
-    const clientsInRoom = ROOMS_TO_CLIENTS_MAP[room] || [];
+async function verify(token, CLIENT_ID) {
+    const client = new OAuth2Client(CLIENT_ID);
 
+    const ticket = await client.verifyIdToken({
+        idToken: token,
+        audience: CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+    const {email, name, sub: userid} = payload;
+    console.log(`User ${name} <${email}> is verified (userid#${userid})`);
+}
+
+const authenticate = async (request, callback) => {
+    const tokenHeader = request.headers['sec-websocket-protocol'];
+    const tokenHeaderKey = 'id_token, ';
+    if (!tokenHeader || !tokenHeader.startsWith(tokenHeaderKey)) {
+        return callback(`Incorrect HTTP header 'sec-websocket-protocol' with OAuth2 token`);
+    }
+
+    const token = tokenHeader.replace(/id_token, /, '');
+    if (token === DEV_TOKEN) {
+        console.log('DEV_TOKEN is correct, skip user verification');
+    } else {
+        try {
+            await verify(token, CLIENT_ID);
+        } catch (err) {
+            return callback(err);
+        }
+    }
+
+    const room = getQueryParam(request, QUERY_PARAM_ROOM_NAME);
+    if (!room) {
+        return callback(`Room number is not specified`);
+    }
+
+    const clientsInRoom = ROOMS_TO_CLIENTS_MAP[room] || [];
     if (clientsInRoom.length >= MAX_CLIENTS_IN_ROOM) {
-        callback(`Превышено максимальное количество участников, одновременно работающих со стендом: ${MAX_CLIENTS_IN_ROOM - 1}`);
+        callback(`Room volume is exceeded: ${MAX_CLIENTS_IN_ROOM - 1}`);
     } else {
         // TODO verify client credentials on server
         callback(null, {client: true});
@@ -99,6 +132,7 @@ server.on('upgrade', (request, socket, head) => {
             socket.write(`HTTP/1.1 ${code} ${STATUS_CODES[code]}\r\n\r\n${err}`);
             // FIXME pass error argument once bug is fixed https://github.com/nodejs/node/issues/33434
             socket.destroy();
+            console.error(err);
             return;
         }
 
@@ -133,8 +167,8 @@ wss.on("connection", (ws, request, client) => {
         ROOMS_TO_CLIENTS_MAP[room].forEach((client) => {
             // A client WebSocket broadcasting to all connected WebSocket clients in this room, excluding itself
             if (client !== ws && client.isAlive && client.readyState === WebSocket.OPEN) {
-                    client.send(message);
-                    console.log("Send message: '%s'", message);
+                client.send(message);
+                console.log("Send message: '%s'", message);
             }
         })
     });
