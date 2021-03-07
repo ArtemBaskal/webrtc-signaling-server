@@ -115,7 +115,6 @@ const authenticate = async (request, callback) => {
     if (clientsInRoom.length >= MAX_CLIENTS_IN_ROOM) {
         callback(`Room volume is exceeded: ${MAX_CLIENTS_IN_ROOM - 1}`);
     } else {
-        // TODO verify client credentials on server
         callback(null, {client: true});
     }
 };
