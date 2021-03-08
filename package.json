@@ -4,9 +4,12 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
-    "start": "tsc && cross-env BUILD_ENV=PROD node dist/server.js",
-    "watch": "tsc && cross-env BUILD_ENV=DEV node dist/server.js",
-    "lint": "eslint 'src/**'"
+    "dev": "yarn build && yarn watch",
+    "start": "cross-env BUILD_ENV=PROD node dist/server.js",
+    "watch": "cross-env BUILD_ENV=DEV node dist/server.js",
+    "lint": "eslint 'src/**'",
+    "postinstall": "npm run build",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
