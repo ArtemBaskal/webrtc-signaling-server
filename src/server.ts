@@ -1,5 +1,4 @@
 import WebSocket, { Data } from 'ws';
-import url from 'url';
 import fs from 'fs';
 import { OAuth2Client } from 'google-auth-library';
 import { config } from 'dotenv';
@@ -7,6 +6,7 @@ import http, { IncomingMessage, ServerResponse } from 'http';
 import https from 'https';
 import { Duplex } from 'stream';
 import { Socket } from 'net';
+import { getQueryParam } from './helpers';
 
 config();
 
@@ -55,20 +55,6 @@ interface MyWebSocket extends WebSocket {
 const ROOMS_TO_CLIENTS_MAP: { [key: string]: MyWebSocket[] } = {};
 const QUERY_PARAM_ROOM_NAME = 'room';
 const MAX_CLIENTS_IN_ROOM = 2;
-
-/**
- *
- * @param request {object}
- * @param paramName {string}
- * @returns {string}
- */
-const getQueryParam = (request: IncomingMessage, paramName: string): string | null => {
-  // Only valid for request obtained from http.Server.
-  const { query } = url.parse(request.url as string);
-  const urlSearchParams = new URLSearchParams(query as string);
-
-  return urlSearchParams.get(paramName);
-};
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const noop = () => {
