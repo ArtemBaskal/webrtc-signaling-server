@@ -54,7 +54,7 @@ interface MyWebSocket extends WebSocket {
 
 const ROOMS_TO_CLIENTS_MAP: { [key: string]: MyWebSocket[] } = {};
 const QUERY_PARAM_ROOM_NAME = 'room';
-const MAX_CLIENTS_IN_ROOM = 2;
+const MAX_CLIENTS_IN_ROOM = 1;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const noop = () => {
@@ -111,6 +111,7 @@ const authenticate = async (request: IncomingMessage, callback: cbType) => {
     console.log('DEV_TOKEN is correct, skip user verification');
   } else if (CLIENT_ID === undefined) {
     console.error('CLIENT_ID is not specified');
+    return;
   } else {
     try {
       await verify(token, CLIENT_ID);
